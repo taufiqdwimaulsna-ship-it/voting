@@ -1,0 +1,6 @@
+<?php
+require_once "config/app.php";if(is_login())redirect(is_admin()?"admin/dashboard.php":"index.php");$page_title="Masuk";
+if($_SERVER['REQUEST_METHOD']==='POST'){$email=strtolower(trim($_POST['email']??''));$pass=$_POST['password']??'';$s=$conn->prepare("SELECT * FROM users WHERE email=? LIMIT 1");$s->bind_param("s",$email);$s->execute();$u=$s->get_result()->fetch_assoc();if($u && password_verify($pass,$u['password'])){session_regenerate_id(true);$_SESSION['user']=['id'=>$u['id'],'nama'=>$u['nama'],'email'=>$u['email'],'role'=>$u['role']];redirect($u['role']==='admin'?'admin/dashboard.php':'index.php');}flash("Email atau password salah.","danger");}
+include "includes/header.php"; ?>
+<div class="container"><div class="auth-wrap"><div class="panel auth-panel"><div class="eyebrow">Selamat datang kembali</div><h1 class="section-title">Masuk akun</h1><form method="post"><label class="form-label">Email</label><input class="form-control mb-3" type="email" name="email" required><label class="form-label">Password</label><input class="form-control mb-3" type="password" name="password" required><button class="btn btn-maroon w-100">Masuk</button></form><p class="small-muted mt-3 mb-0">Belum punya akun? <a href="register.php">Daftar sekarang</a></p></div></div></div>
+<?php include "includes/footer.php"; ?>

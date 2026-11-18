@@ -1,0 +1,4 @@
+<?php
+$page_title="Data pemilih";include "_header.php";$q=$conn->query("SELECT u.id,u.nama,u.email,u.no_hp,u.created_at,COUNT(v.id) jumlah FROM users u LEFT JOIN voting v ON v.user_id=u.id WHERE u.role='pemilih' GROUP BY u.id ORDER BY u.id DESC");?>
+<div class="panel p-3 p-md-4"><div class="table-responsive"><table class="table"><thead><tr><th>Nama</th><th>Email</th><th>No. HP</th><th>Suara sah</th><th>Terdaftar</th></tr></thead><tbody><?php while($r=$q->fetch_assoc()):?><tr><td><?=e($r['nama'])?></td><td><?=e($r['email'])?></td><td><?=e($r['no_hp'])?></td><td><?=$r['jumlah']?></td><td><?=e($r['created_at'])?></td></tr><?php endwhile;?></tbody></table></div></div>
+<?php include "_footer.php"; ?>

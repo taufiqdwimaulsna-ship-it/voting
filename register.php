@@ -1,0 +1,10 @@
+<?php
+require_once "config/app.php"; if(is_login())redirect("index.php");$page_title="Registrasi";
+if($_SERVER['REQUEST_METHOD']==='POST'){
+ $nama=trim($_POST['nama']??'');$email=strtolower(trim($_POST['email']??''));$hp=trim($_POST['no_hp']??'');$password=$_POST['password']??'';
+ if($nama===''||!filter_var($email,FILTER_VALIDATE_EMAIL)||$hp===''||strlen($password)<8){flash("Lengkapi data dengan benar. Password minimal 8 karakter.","danger");}
+ else{$cek=$conn->prepare("SELECT id FROM users WHERE email=?");$cek->bind_param("s",$email);$cek->execute();if($cek->get_result()->num_rows){flash("Email sudah terdaftar.","danger");}else{$hash=password_hash($password,PASSWORD_DEFAULT);$role='pemilih';$ins=$conn->prepare("INSERT INTO users(nama,email,no_hp,password,role) VALUES(?,?,?,?,?)");$ins->bind_param("sssss",$nama,$email,$hp,$hash,$role);if($ins->execute()){flash("Registrasi berhasil. Silakan masuk.");redirect("login.php");}flash("Registrasi gagal.","danger");}}
+}
+include "includes/header.php"; ?>
+<div class="container"><div class="auth-wrap"><div class="panel auth-panel"><div class="eyebrow">Bergabung sebagai pemilih</div><h1 class="section-title">Buat akun</h1><p class="small-muted">Daftarkan akun untuk mendukung kontestan pilihanmu.</p><form method="post"><label class="form-label">Nama lengkap</label><input class="form-control mb-3" name="nama" required><label class="form-label">Email</label><input class="form-control mb-3" type="email" name="email" required><label class="form-label">Nomor HP</label><input class="form-control mb-3" name="no_hp" required><label class="form-label">Password</label><input class="form-control mb-3" type="password" name="password" minlength="8" required><button class="btn btn-maroon w-100">Daftar akun</button></form><p class="small-muted mt-3 mb-0">Sudah punya akun? <a href="login.php">Masuk</a></p></div></div></div>
+<?php include "includes/footer.php"; ?>

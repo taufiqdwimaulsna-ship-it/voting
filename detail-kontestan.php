@@ -1,0 +1,6 @@
+<?php
+require_once "config/app.php"; $id=(int)($_GET['id']??0); $stmt=$conn->prepare("SELECT * FROM kontestan WHERE id=?");$stmt->bind_param("i",$id);$stmt->execute();$k=$stmt->get_result()->fetch_assoc();if(!$k){flash("Kontestan tidak ditemukan","danger");redirect("kontestan.php");}
+$page_title=$k['nama']; include "includes/header.php";
+?>
+<div class="container py-5"><a href="kontestan.php" class="small text-decoration-none" style="color:var(--maroon)">← Kembali ke kontestan</a><div class="row g-4 mt-2"><div class="col-md-5"><?php if($k['foto'] && file_exists(__DIR__.'/'.$k['foto'])): ?><img src="<?= e($k['foto']) ?>" class="detail-photo" alt="<?= e($k['nama']) ?>"><?php else: ?><div class="candidate-placeholder rounded-3"><?= e(strtoupper(substr($k['nama'],0,1))) ?></div><?php endif; ?></div><div class="col-md-7"><span class="tag"><?= e($k['kategori']) ?> • NOMOR <?= e($k['nomor_peserta']) ?></span><h1 class="section-title mt-3"><?= e($k['nama']) ?></h1><p class="small-muted"><?= e($k['asal_instansi']) ?></p><hr><h6>Visi</h6><p><?= nl2br(e($k['visi'])) ?></p><h6>Misi</h6><p><?= nl2br(e($k['misi'])) ?></p><h6>Profil</h6><p><?= nl2br(e($k['deskripsi'])) ?></p><a href="vote.php?id=<?= (int)$k['id'] ?>" class="btn btn-maroon mt-2">Dukung kontestan ini</a></div></div></div>
+<?php include "includes/footer.php"; ?>
